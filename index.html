@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Manager - Quản Lý Tài Khoản</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Mode (Default) */
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            
+            /* Colors - Dark */
+            --bg-primary: #020617;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1f2937;
+            --bg-card: #1f2937;
+            --bg-input: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #d1d5db;
+            --text-muted: #6b7280;
+            --border-color: rgba(255,255,255,0.1);
+            --border-light: rgba(255,255,255,0.05);
+            --shadow: rgba(0,0,0,0.3);
+            --nav-hover: rgba(255,255,255,0.05);
+            --nav-active-bg: rgba(99, 102, 241, 0.1);
+        }
+        
+        [data-theme="light"] {
+            /* Light Mode */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border-color: rgba(0,0,0,0.1);
+            --border-light: rgba(0,0,0,0.05);
+            --shadow: rgba(0,0,0,0.1);
+            --nav-hover: rgba(0,0,0,0.05);
+            --nav-active-bg: rgba(99, 102, 241, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 16px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+        
+        .sidebar-brand-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .sidebar-brand h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .sidebar-brand span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .nav-section {
+            margin-bottom: 24px;
+        }
+        
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item:hover {
+            background: var(--nav-hover);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: var(--nav-active-bg);
+            color: var(--primary);
+        }
+        
+        .nav-item.active .nav-item-icon {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+        
+        .nav-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+        
+        .nav-item-content {
+            flex: 1;
+        }
+        
+        .nav-item-title {
+            font-weight: 500;
+            font-size: 14px;
+            color: inherit;
+        }
+        
+        .nav-item-count {
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 32px;
+            transition: margin 0.3s ease;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .header-left h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .header-left p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .theme-toggle .sun { display: none; }
+        .theme-toggle .moon { display: block; }
+        
+        [data-theme="light"] .theme-toggle .sun { display: block; }
+        [data-theme="light"] .theme-toggle .moon { display: none; }
+        
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            max-width: 400px;
+            margin-bottom: 24px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .stat-card.total::before {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        /* Account Cards */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        
+        .account-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .account-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+        
+        .account-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .account-platform {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .platform-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .platform-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 2px;
+        }
+        
+        .platform-info span {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .account-menu-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .account-menu-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .account-fields {
+            margin-bottom: 20px;
+        }
+        
+        .account-field {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .account-field:last-child {
+            border-bottom: none;
+        }
+        
+        .field-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--nav-active-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            margin-right: 12px;
+            font-size: 14px;
+        }
+        
+        .field-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .field-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .field-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .field-copy {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .field-copy:hover {
+            background: var(--nav-active-bg);
+            color: var(--primary);
+        }
+        
+        .account-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            padding: 6px 12px;
+            background: var(--nav-active-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .account-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--text-muted);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--nav-hover);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+        
+        .btn-icon {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+            transition: all 0.3s ease;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.6);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 2px dashed var(--border-color);
+        }
+        
+        .empty-state-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+            background: var(--nav-active-bg);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        
+        /* Modal */
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px 28px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .modal-body {
+            padding: 28px;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 28px;
+        }
+        
+        .btn-close {
+            filter: invert(0.5);
+            opacity: 0.5;
+        }
+        
+        .btn-close:hover {
+            opacity: 1;
+        }
+        
+        [data-theme="light"] .btn-close {
+            filter: invert(0);
+        }
+        
+        /* Form Elements */
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        
+        .input-group-text {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            color: var(--text-muted);
+            border-radius: 12px 0 0 12px;
+        }
+        
+        .input-group .form-control {
+            border-radius: 0 12px 12px 0;
+        }
+        
+        /* Platform List */
+        .platform-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--bg-input);
+            border-radius: 14px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .platform-list-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .platform-list-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-primary);
+        }
+        
+        .platform-list-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+        
+        /* Toast */
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-primary);
+        }
+        
+        /* Dropdown */
+        .dropdown-menu {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 8px;
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+        
+        .dropdown-item {
+            color: var(--text-secondary);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--nav-active-bg);
+            color: var(--primary);
+        }
+        
+        .dropdown-item.text-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .dropdown-divider {
+            border-color: var(--border-color);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+        
+        /* Form Select Arrow */
+        [data-theme="light"] .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div>
+                <h1>Account Manager</h1>
+                <span>Quản lý tài khoản</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Tổng quan</div>
+                <div class="nav-item active" onclick="filterByPlatform('all')" id="nav-all">
+                    <div class="nav-item-icon" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                    </div>
+                    <div class="nav-item-content">
+                        <div class="nav-item-title">Tất cả tài khoản</div>
+                    </div>
+                    <span class="nav-item-count" id="navTotalCount">0</span>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Nền tảng</div>
+                <div id="sidebarPlatforms">
+                    <!-- Platforms will be rendered here -->
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Công cụ</div>
+                <div class="nav-item" onclick="openPlatformModal()">
+                    <div class="nav-item-icon" style="background: var(--bg-tertiary);">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <div class="nav-item-content">
+                        <div class="nav-item-title">Quản lý nền tảng</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="exportData()">
+                <div class="nav-item-icon" style="background: var(--success); color: white;">
+                    <i class="bi bi-download"></i>
+                </div>
+                <div class="nav-item-content">
+                    <div class="nav-item-title">Xuất dữ liệu</div>
+                </div>
+            </div>
+            <div class="nav-item" onclick="document.getElementById('importFile').click()">
+                <div class="nav-item-icon" style="background: var(--warning); color: white;">
+                    <i class="bi bi-upload"></i>
+                </div>
+                <div class="nav-item-content">
+                    <div class="nav-item-title">Nhập dữ liệu</div>
+                </div>
+            </div>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h2>Xin chào!</h2>
+                <p>Quản lý tài khoản của bạn một cách an toàn</p>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Chuyển đổi giao diện">
+                    <i class="bi bi-moon-fill moon"></i>
+                    <i class="bi bi-sun-fill sun"></i>
+                </button>
+                <button class="btn btn-outline" onclick="openPlatformModal()">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    Nền tảng
+                </button>
+                <button class="btn btn-primary" onclick="openModal()">
+                    <i class="bi bi-plus-lg"></i>
+                    Thêm tài khoản
+                </button>
+            </div>
+        </header>
+
+        <!-- Search -->
+        <div class="search-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" 
+                   placeholder="Tìm kiếm tài khoản..." onkeyup="filterAccounts()">
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stats will be rendered here -->
+        </div>
+
+        <!-- Account List -->
+        <div class="section-title">
+            <i class="bi bi-collection"></i>
+            <span id="accountListTitle">Tất cả tài khoản</span>
+            <span id="accountCount" style="color: var(--text-muted); font-weight: 400;">(0)</span>
+        </div>
+        
+        <div class="accounts-grid" id="accountList">
+            <!-- Accounts will be rendered here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h3>Chưa có tài khoản nào</h3>
+            <p>Nhấn "Thêm tài khoản" để bắt đầu quản lý tài khoản của bạn</p>
+            <button class="btn btn-primary" onclick="openModal()">
+                <i class="bi bi-plus-lg"></i>
+                Thêm tài khoản đầu tiên
+            </button>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="openModal()">
+        <i class="bi bi-plus"></i>
+    </button>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="accountModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">
+                        <i class="bi bi-plus-circle" style="color: var(--primary);"></i>
+                        Thêm tài khoản mới
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="accountForm">
+                        <input type="hidden" id="accountId">
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Nền tảng</label>
+                                <select class="form-select" id="platform">
+                                    <option value="">-- Chọn nền tảng --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Tên tài khoản</label>
+                                <input type="text" class="form-control" id="username" 
+                                       placeholder="player123">
+                            </div>
+                        </div>
+                        
+                        <div class="row g-4 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Email / ID</label>
+                                <input type="text" class="form-control" id="email"
+                                       placeholder="email@example.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Mật khẩu</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" class="form-control" id="password"
+                                           placeholder="••••••••">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                                        <i class="bi bi-eye" id="toggleIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-4 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Link đăng nhập</label>
+                                <input type="url" class="form-control" id="loginUrl"
+                                       placeholder="https://...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày tạo</label>
+                                <input type="date" class="form-control" id="createdDate">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea class="form-control" id="notes" rows="3" 
+                                      placeholder="Thông tin bổ sung, gift codes, vật phẩm..."></textarea>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <label class="form-label">Tags (phân cách bằng dấu phẩy)</label>
+                            <input type="text" class="form-control" id="tags"
+                                   placeholder="VIP, Main, Alt, Event...">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAccount()">
+                        <i class="bi bi-check2"></i>
+                        Lưu tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Detail Modal -->
+    <div class="modal fade" id="viewModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewTitle">
+                        <span id="viewPlatformIcon"></span>
+                        <span id="viewPlatformName"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="account-fields">
+                        <div class="account-field">
+                            <div class="field-icon"><i class="bi bi-person"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Tên tài khoản</div>
+                                <div class="field-value" id="viewUsername"></div>
+                            </div>
+                        </div>
+                        <div class="account-field">
+                            <div class="field-icon"><i class="bi bi-envelope"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Email / ID</div>
+                                <div class="field-value" id="viewEmail"></div>
+                            </div>
+                        </div>
+                        <div class="account-field">
+                            <div class="field-icon"><i class="bi bi-lock"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Mật khẩu</div>
+                                <div class="field-value" id="viewPassword"></div>
+                            </div>
+                            <button class="field-copy" onclick="copyToClipboard('viewPassword')">
+                                <i class="bi bi-copy"></i>
+                            </button>
+                        </div>
+                        <div class="account-field" id="viewLoginUrlContainer" style="display: none;">
+                            <div class="field-icon"><i class="bi bi-link-45deg"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Link đăng nhập</div>
+                                <a id="viewLoginUrl" href="#" target="_blank" class="field-value" style="color: var(--primary);"></a>
+                            </div>
+                        </div>
+                        <div class="account-field" id="viewCreatedDateContainer" style="display: none;">
+                            <div class="field-icon"><i class="bi bi-calendar3"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Ngày tạo</div>
+                                <div class="field-value" id="viewCreatedDate"></div>
+                            </div>
+                        </div>
+                        <div class="account-field" id="viewNotesContainer" style="display: none;">
+                            <div class="field-icon"><i class="bi bi-card-text"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Ghi chú</div>
+                                <div class="field-value" id="viewNotes"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account-tags" id="viewTagsContainer" style="display: none;">
+                        <!-- Tags will be rendered here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-outline" id="editFromViewBtn">
+                        <i class="bi bi-pencil"></i>
+                        Chỉnh sửa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--danger), #dc2626); color: white;">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Xác nhận xóa
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-trash" style="font-size: 36px; color: var(--danger);"></i>
+                    </div>
+                    <p id="deleteMessage" style="font-size: 16px;">Bạn có chắc chắn muốn xóa?</p>
+                    <p class="text-muted mb-0" id="deleteAccountName" style="font-size: 14px;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">
+                        <i class="bi bi-trash"></i>
+                        Xóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Management Modal -->
+    <div class="modal fade" id="platformModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-grid-3x3-gap" style="color: var(--primary);"></i>
+                        Quản lý nền tảng
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button class="btn btn-primary btn-sm" onclick="openAddPlatform()">
+                            <i class="bi bi-plus-lg"></i>
+                            Thêm nền tảng
+                        </button>
+                    </div>
+                    <div id="platformList">
+                        <!-- Platform list will be rendered here -->
+                    </div>
+                    <hr style="border-color: var(--border-color);">
+                    <div id="platformFormContainer" style="display: none;">
+                        <h6 id="platformFormTitle" class="mb-3">Thêm nền tảng mới</h6>
+                        <input type="hidden" id="editPlatformId">
+                        <div class="mb-3">
+                            <label class="form-label">Tên nền tảng</label>
+                            <input type="text" class="form-control" id="platformName" placeholder="Ví dụ: Facebook">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Màu sắc</label>
+                            <input type="color" class="form-control form-control-color" id="platformColor" value="#636e72">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="savePlatform()">
+                                <i class="bi bi-check2"></i>
+                                Lưu
+                            </button>
+                            <button class="btn btn-secondary" onclick="cancelPlatformForm()">
+                                <i class="bi bi-x"></i>
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container">
+        <div class="toast" id="toast" role="alert">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="bi bi-check-circle-fill" id="toastIcon" style="color: var(--success);"></i>
+                <span id="toastMessage"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data Storage
+        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let platforms = JSON.parse(localStorage.getItem('platforms')) || [
+            { id: 'steam', name: 'Steam', icon: 'steam', color: '#1b2838' },
+            { id: 'yugioh', name: 'Yu-Gi-Oh! MD', icon: 'yugioh', color: '#f9ca24' },
+            { id: 'rok', name: 'Rise of Kingdom', icon: 'rok', color: '#6c5ce7' },
+            { id: 'hotmail', name: 'Hotmail', icon: 'hotmail', color: '#0078d4' },
+            { id: 'other', name: 'Khác', icon: 'other', color: '#636e72' }
+        ];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let deleteAccountId = null;
+        let deletePlatformId = null;
+        let modal, viewModal, platformModal;
+        
+        // Theme
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+
+        // Platform icons
+        function getPlatformIcon(platformId) {
+            const iconMap = {
+                steam: '<i class="bi bi-steam"></i>',
+                yugioh: '<i class="bi bi-controller"></i>',
+                rok: '<i class="bi bi-shield-check"></i>',
+                hotmail: '<i class="bi bi-envelope-at"></i>',
+                other: '<i class="bi bi-globe2"></i>'
+            };
+            return iconMap[platformId] || '<i class="bi bi-app"></i>';
+        }
+
+        function getPlatformName(platformId) {
+            const platform = platforms.find(p => p.id === platformId);
+            return platform ? platform.name : platformId;
+        }
+
+        function getPlatformColor(platformId) {
+            const platform = platforms.find(p => p.id === platformId);
+            return platform ? platform.color : '#636e72';
+        }
+
+        // Theme functions
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(currentTheme);
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setTheme(currentTheme);
+            
+            modal = new bootstrap.Modal(document.getElementById('accountModal'));
+            viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+            platformModal = new bootstrap.Modal(document.getElementById('platformModal'));
+            
+            renderSidebarPlatforms();
+            renderStats();
+            renderAccounts();
+            updateStats();
+            updatePlatformSelect();
+            
+            document.getElementById('editFromViewBtn').addEventListener('click', function() {
+                const accId = document.getElementById('accountId').value;
+                viewModal.hide();
+                setTimeout(() => editAccount(accId), 300);
+            });
+        });
+
+        // Render sidebar platforms
+        function renderSidebarPlatforms() {
+            const container = document.getElementById('sidebarPlatforms');
+            container.innerHTML = platforms.map(p => `
+                <div class="nav-item" onclick="filterByPlatform('${p.id}', this)">
+                    <div class="nav-item-icon" style="background: ${p.color}; color: white;">
+                        ${getPlatformIcon(p.id)}
+                    </div>
+                    <div class="nav-item-content">
+                        <div class="nav-item-title">${escapeHtml(p.name)}</div>
+                    </div>
+                    <span class="nav-item-count" id="nav_${p.id}_count">${accounts.filter(a => a.platform === p.id).length}</span>
+                </div>
+            `).join('');
+            
+            const otherCount = accounts.filter(a => !platforms.some(p => p.id === a.platform)).length;
+            container.innerHTML += `
+                <div class="nav-item" onclick="filterByPlatform('other', this)" id="nav-other">
+                    <div class="nav-item-icon" style="background: var(--text-muted); color: white;">
+                        <i class="bi bi-three-dots"></i>
+                    </div>
+                    <div class="nav-item-content">
+                        <div class="nav-item-title">Khác</div>
+                    </div>
+                    <span class="nav-item-count" id="nav_other_count">${otherCount}</span>
+                </div>
+            `;
+        }
+
+        // Update platform select in modal
+        function updatePlatformSelect() {
+            const select = document.getElementById('platform');
+            select.innerHTML = `
+                <option value="">-- Chọn nền tảng --</option>
+                ${platforms.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+                <option value="other">Khác</option>
+            `;
+        }
+
+        // Render stats
+        function renderStats() {
+            const container = document.getElementById('statsGrid');
+            container.innerHTML = `
+                <div class="stat-card total">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+                        <i class="bi bi-collection"></i>
+                    </div>
+                    <div class="stat-value" id="totalAccounts">0</div>
+                    <div class="stat-label">Tổng tài khoản</div>
+                </div>
+                ${platforms.slice(0, 3).map(p => `
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: ${p.color}; color: white;">
+                            ${getPlatformIcon(p.id)}
+                        </div>
+                        <div class="stat-value" id="${p.id}Count">0</div>
+                        <div class="stat-label">${escapeHtml(p.name)}</div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalAccounts').textContent = accounts.length;
+            document.getElementById('navTotalCount').textContent = accounts.length;
+            platforms.forEach(p => {
+                const el = document.getElementById(p.id + 'Count');
+                const navEl = document.getElementById('nav_' + p.id + '_count');
+                const count = accounts.filter(a => a.platform === p.id).length;
+                if (el) el.textContent = count;
+                if (navEl) navEl.textContent = count;
+            });
+            const otherCount = accounts.filter(a => !platforms.some(p => p.id === a.platform)).length;
+            const navOtherEl = document.getElementById('nav_other_count');
+            if (navOtherEl) navOtherEl.textContent = otherCount;
+        }
+
+        // Render accounts
+        function renderAccounts() {
+            const container = document.getElementById('accountList');
+            const emptyState = document.getElementById('emptyState');
+            const listTitle = document.getElementById('accountListTitle');
+            const accountCount = document.getElementById('accountCount');
+            
+            let filtered = accounts.filter(acc => {
+                const platformExists = platforms.some(p => p.id === acc.platform);
+                const isOther = !platformExists;
+                const matchPlatform = currentFilter === 'all' || 
+                    acc.platform === currentFilter || 
+                    (currentFilter === 'other' && isOther);
+                const matchSearch = searchQuery === '' || 
+                    (acc.username && acc.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                    (acc.email && acc.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                    (acc.tags && acc.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
+                return matchPlatform && matchSearch;
+            });
+
+            if (currentFilter === 'all') {
+                listTitle.textContent = 'Tất cả tài khoản';
+            } else if (currentFilter === 'other') {
+                listTitle.textContent = 'Khác';
+            } else {
+                listTitle.textContent = getPlatformName(currentFilter);
+            }
+            accountCount.textContent = `(${filtered.length})`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = filtered.map(acc => {
+                const platformExists = platforms.some(p => p.id === acc.platform);
+                const bgStyle = platformExists ? `background: ${getPlatformColor(acc.platform)}` : 'background: var(--text-muted)';
+                return `
+                <div class="account-card animate-in">
+                    <div class="account-card-header">
+                        <div class="account-platform">
+                            <div class="platform-icon" style="${bgStyle}">
+                                ${getPlatformIcon(acc.platform)}
+                            </div>
+                            <div class="platform-info">
+                                <h4>${escapeHtml(acc.username || 'Không tên')}</h4>
+                                <span>${getPlatformName(acc.platform)}</span>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <button class="account-menu-btn" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#" onclick="viewAccount('${acc.id}')">
+                                    <i class="bi bi-eye me-2"></i>Xem chi tiết
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="editAccount('${acc.id}')">
+                                    <i class="bi bi-pencil me-2"></i>Chỉnh sửa
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteAccount('${acc.id}')">
+                                    <i class="bi bi-trash me-2"></i>Xóa
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="account-fields">
+                        ${acc.email ? `
+                        <div class="account-field">
+                            <div class="field-icon"><i class="bi bi-envelope"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Email / ID</div>
+                                <div class="field-value">${escapeHtml(acc.email)}</div>
+                            </div>
+                            <button class="field-copy" onclick="copyToClipboard(null, '${escapeHtml(acc.email)}')">
+                                <i class="bi bi-copy"></i>
+                            </button>
+                        </div>
+                        ` : ''}
+                        ${acc.password ? `
+                        <div class="account-field">
+                            <div class="field-icon"><i class="bi bi-lock"></i></div>
+                            <div class="field-content">
+                                <div class="field-label">Mật khẩu</div>
+                                <div class="field-value">••••••••</div>
+                            </div>
+                            <button class="field-copy" onclick="copyToClipboard(null, '${escapeHtml(acc.password)}')">
+                                <i class="bi bi-copy"></i>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    ${acc.tags && acc.tags.length > 0 ? `
+                    <div class="account-tags">
+                        ${acc.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    <div class="account-actions">
+                        ${acc.loginUrl ? `
+                            <a href="${escapeHtml(acc.loginUrl)}" target="_blank" class="btn btn-outline btn-sm flex-grow-1">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                Mở link
+                            </a>
+                        ` : ''}
+                        <button class="btn btn-primary btn-sm" onclick="viewAccount('${acc.id}')">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // Filter functions
+        function filterByPlatform(platform, element) {
+            currentFilter = platform;
+            
+            // Update active state
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            } else {
+                // Click from sidebar
+                const allNav = document.getElementById('nav-all');
+                if (platform === 'all' && allNav) {
+                    allNav.classList.add('active');
+                } else if (platform === 'other') {
+                    const otherNav = document.getElementById('nav-other');
+                    if (otherNav) otherNav.classList.add('active');
+                }
+            }
+            
+            renderAccounts();
+        }
+
+        function filterAccounts() {
+            searchQuery = document.getElementById('searchInput').value;
+            renderAccounts();
+        }
+
+        // Modal functions
+        function openModal(accountId = null) {
+            document.getElementById('accountForm').reset();
+            document.getElementById('accountId').value = '';
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-plus-circle" style="color: var(--primary);"></i> Thêm tài khoản mới';
+            updatePlatformSelect();
+            
+            if (accountId) {
+                const acc = accounts.find(a => a.id === accountId);
+                if (acc) {
+                    document.getElementById('accountId').value = acc.id;
+                    document.getElementById('platform').value = acc.platform;
+                    document.getElementById('username').value = acc.username || '';
+                    document.getElementById('email').value = acc.email || '';
+                    document.getElementById('password').value = acc.password || '';
+                    document.getElementById('loginUrl').value = acc.loginUrl || '';
+                    document.getElementById('createdDate').value = acc.createdDate || '';
+                    document.getElementById('notes').value = acc.notes || '';
+                    document.getElementById('tags').value = acc.tags ? acc.tags.join(', ') : '';
+                    document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil" style="color: var(--warning);"></i> Chỉnh sửa tài khoản';
+                }
+            }
+            
+            modal.show();
+        }
+
+        function editAccount(id) {
+            openModal(id);
+        }
+
+        function viewAccount(id) {
+            const acc = accounts.find(a => a.id === id);
+            if (!acc) return;
+
+            document.getElementById('accountId').value = id;
+            
+            const bgStyle = `background: ${getPlatformColor(acc.platform)}`;
+            document.getElementById('viewPlatformIcon').innerHTML = getPlatformIcon(acc.platform);
+            document.getElementById('viewPlatformIcon').setAttribute('style', `${bgStyle}; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; margin-right: 12px;`);
+            document.getElementById('viewPlatformName').textContent = getPlatformName(acc.platform);
+            document.getElementById('viewUsername').textContent = acc.username || 'Không tên';
+            document.getElementById('viewEmail').textContent = acc.email || 'Không có';
+            document.getElementById('viewPassword').textContent = acc.password || 'Không có';
+            
+            if (acc.loginUrl) {
+                document.getElementById('viewLoginUrl').href = acc.loginUrl;
+                document.getElementById('viewLoginUrl').textContent = acc.loginUrl;
+                document.getElementById('viewLoginUrlContainer').style.display = 'flex';
+            } else {
+                document.getElementById('viewLoginUrlContainer').style.display = 'none';
+            }
+            
+            if (acc.createdDate) {
+                document.getElementById('viewCreatedDate').textContent = formatDate(acc.createdDate);
+                document.getElementById('viewCreatedDateContainer').style.display = 'flex';
+            } else {
+                document.getElementById('viewCreatedDateContainer').style.display = 'none';
+            }
+            
+            if (acc.notes) {
+                document.getElementById('viewNotes').textContent = acc.notes;
+                document.getElementById('viewNotesContainer').style.display = 'flex';
+            } else {
+                document.getElementById('viewNotesContainer').style.display = 'none';
+            }
+            
+            if (acc.tags && acc.tags.length > 0) {
+                document.getElementById('viewTags').innerHTML = acc.tags.map(tag => 
+                    `<span class="tag">${escapeHtml(tag)}</span>`
+                ).join('');
+                document.getElementById('viewTagsContainer').style.display = 'flex';
+            } else {
+                document.getElementById('viewTagsContainer').style.display = 'none';
+            }
+
+            viewModal.show();
+        }
+
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                pwdInput.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        // Save account
+        function saveAccount() {
+            const id = document.getElementById('accountId').value || generateId();
+            const tagsInput = document.getElementById('tags').value;
+            
+            const accountData = {
+                id: id,
+                platform: document.getElementById('platform').value || 'other',
+                username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                loginUrl: document.getElementById('loginUrl').value.trim(),
+                createdDate: document.getElementById('createdDate').value,
+                notes: document.getElementById('notes').value.trim(),
+                tags: tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [],
+                updatedAt: new Date().toISOString()
+            };
+
+            const existingIndex = accounts.findIndex(a => a.id === id);
+            if (existingIndex >= 0) {
+                accountData.createdAt = accounts[existingIndex].createdAt;
+                accounts[existingIndex] = accountData;
+                showToast('Đã cập nhật tài khoản!', 'success');
+            } else {
+                accountData.createdAt = new Date().toISOString();
+                accounts.unshift(accountData);
+                showToast('Đã thêm tài khoản mới!', 'success');
+            }
+
+            saveToStorage();
+            modal.hide();
+            renderSidebarPlatforms();
+            renderStats();
+            renderAccounts();
+            updateStats();
+        }
+
+        // Delete account
+        function deleteAccount(id) {
+            const acc = accounts.find(a => a.id === id);
+            if (acc) {
+                deleteAccountId = id;
+                document.getElementById('deleteMessage').textContent = 'Bạn có chắc chắn muốn xóa tài khoản này?';
+                document.getElementById('deleteAccountName').textContent = `${acc.username || 'Không tên'} (${acc.email || 'Không có email'})`;
+                document.getElementById('confirmDeleteBtn').onclick = confirmDelete;
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            }
+        }
+
+        function confirmDelete() {
+            if (deleteAccountId) {
+                accounts = accounts.filter(a => a.id !== deleteAccountId);
+                saveToStorage();
+                renderSidebarPlatforms();
+                renderStats();
+                renderAccounts();
+                updateStats();
+                showToast('Đã xóa tài khoản!', 'danger');
+            }
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            deleteAccountId = null;
+        }
+
+        // Copy functions
+        function copyToClipboard(elementId, text) {
+            const textToCopy = elementId ? document.getElementById(elementId).textContent : text;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast('Đã copy vào clipboard!', 'success');
+            }).catch(() => {
+                showToast('Không thể copy!', 'danger');
+            });
+        }
+
+        // Export/Import
+        function exportData() {
+            const data = {
+                exportedAt: new Date().toISOString(),
+                version: '1.1',
+                platforms: platforms,
+                accounts: accounts
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `accounts_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Đã xuất dữ liệu!', 'success');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.accounts && Array.isArray(data.accounts)) {
+                        if (data.platforms && Array.isArray(data.platforms)) {
+                            if (confirm('Bạn có muốn nhập cả nền tảng? (OK = Có, Cancel = Không)')) {
+                                platforms = data.platforms;
+                                savePlatformsToStorage();
+                                renderSidebarPlatforms();
+                                renderStats();
+                                updatePlatformSelect();
+                            }
+                        }
+                        
+                        if (accounts.length > 0) {
+                            if (confirm('Bạn có muốn gộp với dữ liệu hiện có? (OK = Gộp, Cancel = Thay thế)')) {
+                                const existingIds = accounts.map(a => a.id);
+                                data.accounts.forEach(acc => {
+                                    if (!existingIds.includes(acc.id)) {
+                                        accounts.push(acc);
+                                    }
+                                });
+                            } else {
+                                accounts = data.accounts;
+                            }
+                        } else {
+                            accounts = data.accounts;
+                        }
+                        saveToStorage();
+                        renderSidebarPlatforms();
+                        renderStats();
+                        renderAccounts();
+                        updateStats();
+                        showToast(`Đã nhập ${data.accounts.length} tài khoản!`, 'success');
+                    } else {
+                        showToast('File không hợp lệ!', 'danger');
+                    }
+                } catch (err) {
+                    showToast('Lỗi khi đọc file!', 'danger');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Helper functions
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('vi-VN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastMessage.textContent = message;
+            
+            const colors = {
+                success: 'var(--success)',
+                danger: 'var(--danger)',
+                warning: 'var(--warning)',
+                info: 'var(--info)'
+            };
+            toastIcon.style.color = colors[type] || colors.info;
+            
+            const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+            bsToast.show();
+        }
+
+        // Platform Management Functions
+        function openPlatformModal() {
+            renderPlatformList();
+            document.getElementById('platformFormContainer').style.display = 'none';
+            platformModal.show();
+        }
+
+        function renderPlatformList() {
+            const container = document.getElementById('platformList');
+            container.innerHTML = platforms.map(p => `
+                <div class="platform-list-item">
+                    <div class="platform-list-info">
+                        <div class="platform-icon" style="background: ${p.color}; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                            ${getPlatformIcon(p.id)}
+                        </div>
+                        <span>${escapeHtml(p.name)}</span>
+                    </div>
+                    <div class="platform-list-actions">
+                        <button class="btn btn-sm btn-outline" onclick="editPlatform('${p.id}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline" style="color: var(--danger);" onclick="confirmDeletePlatform('${p.id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddPlatform() {
+            document.getElementById('platformFormContainer').style.display = 'block';
+            document.getElementById('platformFormTitle').textContent = 'Thêm nền tảng mới';
+            document.getElementById('editPlatformId').value = '';
+            document.getElementById('platformName').value = '';
+            document.getElementById('platformColor').value = '#636e72';
+        }
+
+        function editPlatform(id) {
+            const platform = platforms.find(p => p.id === id);
+            if (!platform) return;
+            
+            document.getElementById('platformFormContainer').style.display = 'block';
+            document.getElementById('platformFormTitle').textContent = 'Chỉnh sửa nền tảng';
+            document.getElementById('editPlatformId').value = id;
+            document.getElementById('platformName').value = platform.name;
+            document.getElementById('platformColor').value = platform.color;
+        }
+
+        function savePlatform() {
+            const name = document.getElementById('platformName').value.trim();
+            const color = document.getElementById('platformColor').value;
+            const editId = document.getElementById('editPlatformId').value;
+            
+            if (!name) {
+                showToast('Vui lòng nhập tên nền tảng!', 'warning');
+                return;
+            }
+
+            if (editId) {
+                const platform = platforms.find(p => p.id === editId);
+                if (platform) {
+                    platform.name = name;
+                    platform.color = color;
+                }
+                showToast('Đã cập nhật nền tảng!', 'success');
+            } else {
+                const newId = name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
+                platforms.push({
+                    id: newId,
+                    name: name,
+                    icon: 'other',
+                    color: color
+                });
+                showToast('Đã thêm nền tảng mới!', 'success');
+            }
+
+            savePlatformsToStorage();
+            renderPlatformList();
+            renderSidebarPlatforms();
+            renderStats();
+            updatePlatformSelect();
+            updateStats();
+            cancelPlatformForm();
+        }
+
+        function cancelPlatformForm() {
+            document.getElementById('platformFormContainer').style.display = 'none';
+        }
+
+        function confirmDeletePlatform(id) {
+            const platform = platforms.find(p => p.id === id);
+            if (!platform) return;
+            
+            const accountCount = accounts.filter(a => a.platform === id).length;
+            document.getElementById('deleteMessage').textContent = 
+                `Bạn có chắc chắn muốn xóa nền tảng "${platform.name}"?`;
+            document.getElementById('deleteAccountName').textContent = 
+                accountCount > 0 ? `Có ${accountCount} tài khoản đang sử dụng nền tảng này!` : '';
+            deletePlatformId = id;
+            document.getElementById('confirmDeleteBtn').onclick = confirmDeletePlatformAction;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        function confirmDeletePlatformAction() {
+            if (deletePlatformId) {
+                accounts.forEach(acc => {
+                    if (acc.platform === deletePlatformId) {
+                        acc.platform = 'other';
+                    }
+                });
+                
+                platforms = platforms.filter(p => p.id !== deletePlatformId);
+                savePlatformsToStorage();
+                saveToStorage();
+                renderPlatformList();
+                renderSidebarPlatforms();
+                renderStats();
+                updateStats();
+                updatePlatformSelect();
+                renderAccounts();
+                showToast('Đã xóa nền tảng!', 'success');
+            }
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            deletePlatformId = null;
+            document.getElementById('confirmDeleteBtn').onclick = confirmDelete;
+        }
+
+        function savePlatformsToStorage() {
+            localStorage.setItem('platforms', JSON.stringify(platforms));
+        }
+    </script>
+</body>
+</html>
